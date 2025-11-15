@@ -61,7 +61,9 @@ export default function Register({ onSwitchToLogin }) {
 
           {/* Terms agreement checkbox removed */}
 
-          <button className="btn-primary" type="submit">登録ボタン</button>
+          <button className="btn-primary" type="submit" disabled={loading}>
+            {loading ? '読み込み中...' : '登録'}
+          </button>
           <p className="muted">既にアカウントをお持ちですか？</p>
           <button type="button" className="btn-secondary" onClick={()=>onSwitchToLogin && onSwitchToLogin()}>ログイン画面へ</button>
         </form>
