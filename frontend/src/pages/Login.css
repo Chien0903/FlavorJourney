@@ -71,6 +71,7 @@
   border: none;
 }
 
+/* Error message styling used by Login.jsx / Register.jsx */
 .form-error {
   color: #e76a6a;
   font-size: 14px;

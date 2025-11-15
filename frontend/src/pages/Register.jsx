@@ -6,6 +6,8 @@ export default function Register({ onSwitchToLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -16,7 +18,7 @@ export default function Register({ onSwitchToLogin }) {
     }
     setLoading(true)
     setError(null)
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
     fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -36,9 +38,6 @@ export default function Register({ onSwitchToLogin }) {
       })
       .finally(() => setLoading(false))
   }
-
-  const [, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   return (
     <div className="login-page">
@@ -61,9 +60,10 @@ export default function Register({ onSwitchToLogin }) {
 
           {/* Terms agreement checkbox removed */}
 
-          <button className="btn-primary" type="submit" disabled={loading}>
+          <button className="btn-primary" type="submit" disabled={loading} aria-busy={loading}>
             {loading ? '読み込み中...' : '登録'}
           </button>
+          {error && <div className="form-error">{error}</div>}
           <p className="muted">既にアカウントをお持ちですか？</p>
           <button type="button" className="btn-secondary" onClick={()=>onSwitchToLogin && onSwitchToLogin()}>ログイン画面へ</button>
         </form>
