@@ -21,10 +21,7 @@ import * as fs from 'fs';
     I18nModule.forRoot({
       fallbackLanguage: 'vi',
       loaderOptions: {
-        path: fs.existsSync(join(__dirname, 'locales'))
-          ? join(__dirname, 'locales')
-          : join(process.cwd(), 'src', 'locales'),
-        watch: true,
+        path: join(__dirname, 'locales'),
       },
       resolvers: [
         { use: QueryResolver, options: ['lang'] },

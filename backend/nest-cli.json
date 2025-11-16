@@ -7,7 +7,7 @@
     "assets": [
       {
         "include": "src/locales/**/*",
-        "outDir": "dist/src/locales"
+        "outDir": "dist"
       }
     ]
   }
