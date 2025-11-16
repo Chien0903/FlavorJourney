@@ -82,35 +82,36 @@ export class DishService {
       tasteFilters.length > 0 ? { AND: tasteFilters } : undefined;
 
     // ==== Map region names (code) and category names (slug) to IDs ====
-    const regionIds = query.region?.length
-      ? (
-          await this.prisma.regions.findMany({
-            where: { code: { in: query.region } }, // <- sửa region
-            select: { id: true },
-          })
-        ).map((r) => r.id)
-      : undefined;
-
-    const categoryIds = query.category?.length
-      ? (
-          await this.prisma.categories.findMany({
-            where: { slug: { in: query.category } }, // <- sửa category
-            select: { id: true },
-          })
-        ).map((c) => c.id)
-      : undefined;
+    const [regionIds, categoryIds] = await Promise.all([
+      query.region?.length
+        ? this.prisma.regions
+            .findMany({
+              where: { code: { in: query.region } },
+              select: { id: true },
+            })
+            .then((r) => r.map((item) => item.id))
+        : Promise.resolve(undefined),
+      query.category?.length
+        ? this.prisma.categories
+            .findMany({
+              where: { slug: { in: query.category } },
+              select: { id: true },
+            })
+            .then((c) => c.map((item) => item.id))
+        : Promise.resolve(undefined),
+    ]);
 
     const dishes = await this.prisma.dishes.findMany({
       where: {
         status: 'approved',
 
         // Full-text search JP + VI
-        OR: query.search
-          ? [
-              { name_japanese: { contains: query.search } },
-              { name_vietnamese: { contains: query.search } },
-            ]
-          : undefined,
+        ...(query.search && {
+          OR: [
+            { name_japanese: { contains: query.search } },
+            { name_vietnamese: { contains: query.search } },
+          ],
+        }),
 
         category_id: categoryIds ? { in: categoryIds } : undefined,
         region_id: regionIds ? { in: regionIds } : undefined,
@@ -137,7 +138,20 @@ export class DishService {
       },
     });
 
-    const total = dishes.length;
+    const total = await this.prisma.dishes.count({
+      where: {
+        status: 'approved',
+        OR: query.search
+          ? [
+              { name_japanese: { contains: query.search } },
+              { name_vietnamese: { contains: query.search } },
+            ]
+          : undefined,
+        category_id: categoryIds ? { in: categoryIds } : undefined,
+        region_id: regionIds ? { in: regionIds } : undefined,
+        ...tasteWhere,
+      },
+    });
     const data: DishResponseDto[] = dishes.map((d) => ({
       id: d.id,
 
