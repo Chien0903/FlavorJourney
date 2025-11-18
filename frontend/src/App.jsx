@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Search from "./pages/Search";
 import "./App.css";
 import { useTranslation } from "react-i18next";
 import Sidebar from "./components/sidebar/sidebar";
@@ -26,12 +27,7 @@ function Home({ onReturnToLogin }) {
   const renderContent = () => {
     switch (active) {
       case "search":
-        return (
-          <>
-            <h1>検索</h1>
-            <p>こちらで料理や場所を検索できます。（デモ）</p>
-          </>
-        );
+        return <Search />;
       case "register":
         return (
           <>
