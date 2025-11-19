@@ -59,6 +59,12 @@ export class UsersService {
       );
     }
 
+    if (oldPassword === password) {
+      throw new BadRequestException(
+        await this.i18n.translate('user.password.same_as_old', { lang })
+      );
+    }
+
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordValid) {
       throw new BadRequestException(
