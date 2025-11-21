@@ -1,0 +1,276 @@
+.dish-detail-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #ff9a62;
+}
+
+.dish-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 32px;
+  align-items: start;
+}
+
+.dish-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dish-image-container {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #f5f5f5;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dish-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dish-image-placeholder {
+  font-size: 4rem;
+  color: #ccc;
+}
+
+.dish-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dish-name-jp {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2f2f2f;
+}
+
+.dish-name-vi {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.dish-name-romaji {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #888;
+  font-style: italic;
+}
+
+.dish-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tag {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag-region {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.tag-spiciness {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.spice-icons {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.spice-icon {
+  font-size: 0.9rem;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+.spice-icon.filled {
+  opacity: 1;
+}
+
+.dish-section {
+  padding: 20px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #f0f0f5;
+}
+
+.dish-section h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.description-content p {
+  margin: 0 0 12px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.description-content p:last-child {
+  margin-bottom: 0;
+}
+
+.romaji-text {
+  font-style: italic;
+  color: #777;
+}
+
+.ingredients-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ingredient-tag {
+  padding: 6px 12px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.how-to-eat-text {
+  margin: 0;
+  line-height: 1.7;
+  color: #555;
+}
+
+.favorite-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: #fff;
+  border: 2px solid #ff9a62;
+  border-radius: 14px;
+  color: #ff9a62;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.favorite-button:hover:not(:disabled) {
+  background: #fff5f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 154, 98, 0.2);
+}
+
+.favorite-button.active {
+  background: #ff9a62;
+  color: #fff;
+}
+
+.favorite-button.active:hover:not(:disabled) {
+  background: #ff8a52;
+}
+
+.favorite-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.heart-icon {
+  font-size: 1.2rem;
+}
+
+.ai-column {
+  position: sticky;
+  top: 24px;
+  height: fit-content;
+}
+
+.dish-detail-loading,
+.dish-detail-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.dish-detail-loading p,
+.dish-detail-error p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.back-button {
+  padding: 10px 20px;
+  background: #ff9a62;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .dish-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-column {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .dish-detail-page {
+    padding: 16px;
+  }
+
+  .dish-name-jp {
+    font-size: 1.5rem;
+  }
+
+  .dish-name-vi {
+    font-size: 1.2rem;
+  }
+
+  .dish-section {
+    padding: 16px;
+  }
+}
+

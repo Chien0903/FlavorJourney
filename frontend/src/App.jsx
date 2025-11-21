@@ -1,9 +1,21 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import DishDetail from "./pages/DishDetail/DishDetail";
 import "./App.css";
 import { useTranslation } from "react-i18next";
 import Sidebar from "./components/sidebar/sidebar";
+
+// Export function để các component khác có thể navigate đến dish detail
+let navigateToDishDetail = null;
+
+export function useNavigateToDish() {
+  return (dishId) => {
+    if (navigateToDishDetail) {
+      navigateToDishDetail(dishId);
+    }
+  };
+}
 
 function Home({ onReturnToLogin }) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -12,6 +24,15 @@ function Home({ onReturnToLogin }) {
     localStorage.getItem("lang") || i18n.language || "vi"
   );
   const [active, setActive] = useState("home");
+  const [viewingDishId, setViewingDishId] = useState(null);
+
+  // Expose navigate function
+  useEffect(() => {
+    navigateToDishDetail = setViewingDishId;
+    return () => {
+      navigateToDishDetail = null;
+    };
+  }, []);
 
   const name =
     user.username || user.email || (lang === "jp" ? "ユーザー" : "Người dùng");
@@ -24,6 +45,16 @@ function Home({ onReturnToLogin }) {
   };
 
   const renderContent = () => {
+    // Nếu đang xem chi tiết món ăn
+    if (viewingDishId) {
+      return (
+        <DishDetail
+          dishId={viewingDishId}
+          onBack={() => setViewingDishId(null)}
+        />
+      );
+    }
+
     switch (active) {
       case "search":
         return (
