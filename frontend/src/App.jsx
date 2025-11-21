@@ -99,10 +99,9 @@ function Home({ onReturnToLogin }) {
 }
 
 function App() {
-  // const [mode, setMode] = useState(() =>
-  //   localStorage.getItem("access_token") ? "home" : "login"
-  // );
-  const [mode, setMode] = useState("home");
+  const [mode, setMode] = useState(() =>
+    localStorage.getItem("access_token") ? "home" : "login"
+  );
   useEffect(() => {
     // If user logs in (access_token set), switch to home
     const onStorage = () => {

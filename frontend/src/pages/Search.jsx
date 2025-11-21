@@ -98,6 +98,15 @@ const Search = () => {
     });
   };
 
+  const handleSortChange = (sort) => {
+    setHasSearched(true);
+    setFilters((prev) => ({
+      ...prev,
+      sort,
+      page: 1,
+    }));
+  };
+
   const handlePageChange = (page) => {
     if (!hasSearched) return;
     setFilters({
@@ -117,60 +126,92 @@ const Search = () => {
   };
 
   return (
-    <div className="search-container">
-      <div className="search-header">
-        <h1>{t('title')}</h1>
-        <p>{t('subtitle')}</p>
-      </div>
+    <div className="search-page">
+      <section className="search-hero">
+        <div>
+          <p className="hero-eyebrow">{t('eyebrow')}</p>
+          <h1>{t('title')}</h1>
+          <p>{t('subtitle')}</p>
+        </div>
+        <div className="hero-actions">
+          <p className="hero-tip">{t('hero_tip')}</p>
+        </div>
+      </section>
 
-      <div className="search-content">
-        {/* Sidebar với filters */}
-        <aside className="search-sidebar">
-          <SearchFilters 
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onReset={handleReset}
-          />
-        </aside>
+      <section className="search-controls">
+        <SearchFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={handleReset}
+        />
+      </section>
 
-        {/* Main content - Danh sách món ăn */}
-        <main className="search-main">
-          {error && (
-            <div className="error-message">
-              <p>{t('error')}: {error}</p>
-            </div>
-          )}
+      <section className="search-results">
+        <div className="results-toolbar">
+          <div>
+            <p className="results-count">
+              {hasSearched
+                ? t('results_found', { count: dishes.length })
+                : t('start_search_prompt')}
+            </p>
+            {hasSearched && (
+              <p className="results-sub">
+                {t('page_info', {
+                  current: currentPage,
+                  total: totalPages,
+                })}
+              </p>
+            )}
+          </div>
+          <div className="sort-control">
+            <label htmlFor="sort-select">{t('sort_label')}</label>
+            <select
+              id="sort-select"
+              value={filters.sort}
+              onChange={(e) => handleSortChange(e.target.value)}
+            >
+              <option value="latest">{t('sort.latest')}</option>
+              <option value="popular">{t('sort.popular')}</option>
+            </select>
+          </div>
+        </div>
 
-          {!hasSearched ? (
-            <div className="no-results">
-              <p>{t('start_search_prompt', { defaultValue: 'Nhập từ khóa hoặc chọn bộ lọc để bắt đầu tìm kiếm.' })}</p>
-            </div>
-          ) : loading ? (
-            <div className="loading">
-              <p>{t('loading')}</p>
-            </div>
-          ) : dishes.length === 0 ? (
-            <div className="no-results">
-              <p>{t('no_results')}</p>
-            </div>
-          ) : (
-            <>
-              <div className="results-info">
-                <p>{t('results_found', { count: dishes.length })}</p>
-              </div>
-              <DishList dishes={dishes} />
-              
-              {totalPages > 1 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              )}
-            </>
-          )}
-        </main>
-      </div>
+        {error && (
+          <div className="error-message">
+            <p>
+              {t('error')}: {error}
+            </p>
+          </div>
+        )}
+
+        {!hasSearched ? (
+          <div className="no-results-card">
+            <p>
+              {t('start_search_prompt')}
+            </p>
+          </div>
+        ) : loading ? (
+          <div className="loading-card">
+            <p>{t('loading')}</p>
+          </div>
+        ) : dishes.length === 0 ? (
+          <div className="no-results-card">
+            <p>{t('no_results')}</p>
+          </div>
+        ) : (
+          <>
+            <DishList dishes={dishes} />
+
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
+        )}
+      </section>
     </div>
   );
 };

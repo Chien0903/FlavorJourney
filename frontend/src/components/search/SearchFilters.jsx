@@ -4,34 +4,65 @@ import './SearchFilters.css';
 
 const SearchFilters = ({ filters, onFilterChange, onReset }) => {
   const { t } = useTranslation('search');
+
+  const FALLBACK_CATEGORIES = [
+    { id: 'street-food', name_vietnamese: 'Ăn vặt', name_japanese: '屋台グルメ' },
+    { id: 'noodle', name_vietnamese: 'Mì/Phở', name_japanese: '麺料理' },
+    { id: 'drink', name_vietnamese: 'Đồ uống', name_japanese: '飲み物' },
+  ];
+
+  const FALLBACK_REGIONS = [
+    { id: 'north', name_vietnamese: 'Miền Bắc', name_japanese: '北部' },
+    { id: 'central', name_vietnamese: 'Miền Trung', name_japanese: '中部' },
+    { id: 'south', name_vietnamese: 'Miền Nam', name_japanese: '南部' },
+  ];
+
   const [localFilters, setLocalFilters] = useState(filters);
-  const [categories, setCategories] = useState([]);
-  const [regions, setRegions] = useState([]);
+  const [categories, setCategories] = useState(FALLBACK_CATEGORIES);
+  const [regions, setRegions] = useState(FALLBACK_REGIONS);
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [optionsError, setOptionsError] = useState(false);
+  const [spiceLevel, setSpiceLevel] = useState(0);
 
   useEffect(() => {
     setLocalFilters(filters);
+    setSpiceLevel(filters.taste.includes('spicy') ? 3 : 0);
   }, [filters]);
 
   // Fetch categories và regions từ API
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        // Fetch categories
-        const categoriesRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/categories`
-        );
-        const categoriesData = await categoriesRes.json();
-        setCategories(categoriesData || []);
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+        const [categoriesRes, regionsRes] = await Promise.all([
+          fetch(`${apiUrl}/categories`),
+          fetch(`${apiUrl}/regions`),
+        ]);
 
-        // Fetch regions
-        const regionsRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/regions`
-        );
-        const regionsData = await regionsRes.json();
-        setRegions(regionsData || []);
+        const normalize = (payload) => {
+          if (Array.isArray(payload)) return payload;
+          if (payload?.data && Array.isArray(payload.data)) return payload.data;
+          return null;
+        };
+
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json();
+          const parsed = normalize(categoriesData);
+          if (parsed) setCategories(parsed);
+        } else {
+          setOptionsError(true);
+        }
+
+        if (regionsRes.ok) {
+          const regionsData = await regionsRes.json();
+          const parsed = normalize(regionsData);
+          if (parsed) setRegions(parsed);
+        } else {
+          setOptionsError(true);
+        }
       } catch (err) {
         console.error('Error fetching filter options:', err);
+        setOptionsError(true);
       } finally {
         setLoadingOptions(false);
       }
@@ -55,139 +86,145 @@ const SearchFilters = ({ filters, onFilterChange, onReset }) => {
     }
   };
 
-  const handleSortChange = (e) => {
-    const sort = e.target.value;
-    onFilterChange({ ...localFilters, sort, page: 1 });
+  const handleCategorySelect = (e) => {
+    const categoryId = e.target.value;
+    const updatedFilters = {
+      ...localFilters,
+      category: categoryId === 'all' ? [] : [categoryId],
+      page: 1,
+    };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
-  const handleCategoryChange = (categoryId) => {
-    const updated = localFilters.category.includes(categoryId)
-      ? localFilters.category.filter(id => id !== categoryId)
-      : [...localFilters.category, categoryId];
-    
-    onFilterChange({ ...localFilters, category: updated, page: 1 });
+  const handleRegionSelect = (e) => {
+    const regionId = e.target.value;
+    const updatedFilters = {
+      ...localFilters,
+      region: regionId === 'all' ? [] : [regionId],
+      page: 1,
+    };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
-  const handleRegionChange = (regionId) => {
-    const updated = localFilters.region.includes(regionId)
-      ? localFilters.region.filter(id => id !== regionId)
-      : [...localFilters.region, regionId];
-    
-    onFilterChange({ ...localFilters, region: updated, page: 1 });
+  const handleSpiceChange = (e) => {
+    const level = Number(e.target.value);
+    setSpiceLevel(level);
+    const withoutSpicy = localFilters.taste.filter((taste) => taste !== 'spicy');
+    const updatedFilters = {
+      ...localFilters,
+      taste: level > 0 ? [...withoutSpicy, 'spicy'] : withoutSpicy,
+      page: 1,
+    };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
-  const handleTasteChange = (tasteValue) => {
-    const updated = localFilters.taste.includes(tasteValue)
-      ? localFilters.taste.filter(t => t !== tasteValue)
-      : [...localFilters.taste, tasteValue];
-    
-    onFilterChange({ ...localFilters, taste: updated, page: 1 });
-  };
-
-  const tasteOptions = [
-    { value: 'spicy', label: t('taste.spicy'), emoji: '🌶️' },
-    { value: 'salty', label: t('taste.salty'), emoji: '🧂' },
-    { value: 'sweet', label: t('taste.sweet'), emoji: '🍯' },
-    { value: 'sour', label: t('taste.sour'), emoji: '🍋' },
-  ];
+  const selectedRegion =
+    localFilters.region[0] !== undefined
+      ? String(localFilters.region[0])
+      : 'all';
+  const selectedCategory =
+    localFilters.category[0] !== undefined
+      ? String(localFilters.category[0])
+      : 'all';
 
   return (
     <div className="search-filters">
-      {/* Search */}
-      <div className="filter-group">
-        <label className="filter-label">{t('search_label')}</label>
-        <div className="search-input-group">
+      <div className="search-headline">
+        <div className="search-input-wrapper">
           <input
             type="text"
             placeholder={t('search_placeholder')}
             value={localFilters.search}
             onChange={handleSearchChange}
-            onKeyPress={handleSearchKeyPress}
-            className="search-input"
+            onKeyDown={handleSearchKeyPress}
           />
-          <button onClick={handleSearchSubmit} className="search-btn">
-            🔍
+          <button type="button" onClick={handleSearchSubmit}>
+            {t('search_cta')}
           </button>
         </div>
+        <button type="button" className="filter-summary" onClick={handleSearchSubmit}>
+          {t('filter_summary')}
+        </button>
       </div>
 
-      {/* Sort */}
-      <div className="filter-group">
-        <label className="filter-label">{t('sort_label')}</label>
-        <select
-          value={localFilters.sort}
-          onChange={handleSortChange}
-          className="filter-select"
-        >
-          <option value="latest">{t('sort.latest')}</option>
-          <option value="popular">{t('sort.popular')}</option>
-        </select>
-      </div>
+      <div className="filter-grid">
+        <div className="filter-field">
+          <label>{t('region_label')}</label>
+          {loadingOptions ? (
+            <p className="loading-text">{t('loading')}</p>
+          ) : (
+            <>
+              <select value={selectedRegion} onChange={handleRegionSelect}>
+                <option value="all">{t('all_regions')}</option>
+                {Array.isArray(regions) &&
+                  regions.map((reg) => (
+                    <option key={reg.id} value={reg.id}>
+                      {reg.name_vietnamese || reg.name_japanese}
+                    </option>
+                  ))}
+              </select>
+              {optionsError && (
+                <small className="options-warning">{t('options_fallback')}</small>
+              )}
+            </>
+          )}
+        </div>
 
-      {/* Category */}
-      <div className="filter-group">
-        <label className="filter-label">{t('category_label')}</label>
-        {loadingOptions ? (
-          <p className="loading-text">{t('loading')}</p>
-        ) : (
-          <div className="checkbox-group">
-            {categories.map(cat => (
-              <label key={cat.id} className="checkbox-item">
-                <input
-                  type="checkbox"
-                  checked={localFilters.category.includes(cat.id)}
-                  onChange={() => handleCategoryChange(cat.id)}
-                />
-                <span>{cat.name_vietnamese || cat.name_japanese}</span>
-              </label>
+        <div className="filter-field">
+          <label>{t('category_label')}</label>
+          {loadingOptions ? (
+            <p className="loading-text">{t('loading')}</p>
+          ) : (
+            <>
+              <select value={selectedCategory} onChange={handleCategorySelect}>
+                <option value="all">{t('all_categories')}</option>
+                {Array.isArray(categories) &&
+                  categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name_vietnamese || cat.name_japanese}
+                    </option>
+                  ))}
+              </select>
+              {optionsError && (
+                <small className="options-warning">{t('options_fallback')}</small>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="filter-field spice-field">
+          <label>
+            {t('taste.spicy')}
+            <span className="spice-value">
+              {spiceLevel === 0
+                ? t('spice_none')
+                : t('spice_selected', { level: spiceLevel })}
+            </span>
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="5"
+            step="1"
+            value={spiceLevel}
+            onChange={handleSpiceChange}
+          />
+          <div className="spice-scale">
+            {[0, 1, 2, 3, 4, 5].map((step) => (
+              <span key={step}>{step}</span>
             ))}
           </div>
-        )}
-      </div>
-
-      {/* Region */}
-      <div className="filter-group">
-        <label className="filter-label">{t('region_label')}</label>
-        {loadingOptions ? (
-          <p className="loading-text">{t('loading')}</p>
-        ) : (
-          <div className="checkbox-group">
-            {regions.map(reg => (
-              <label key={reg.id} className="checkbox-item">
-                <input
-                  type="checkbox"
-                  checked={localFilters.region.includes(reg.id)}
-                  onChange={() => handleRegionChange(reg.id)}
-                />
-                <span>{reg.name_vietnamese || reg.name_japanese}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Taste */}
-      <div className="filter-group">
-        <label className="filter-label">{t('taste_label')}</label>
-        <div className="taste-options">
-          {tasteOptions.map(taste => (
-            <label key={taste.value} className="taste-item">
-              <input
-                type="checkbox"
-                checked={localFilters.taste.includes(taste.value)}
-                onChange={() => handleTasteChange(taste.value)}
-              />
-              <span className="taste-emoji">{taste.emoji}</span>
-              <span className="taste-text">{taste.label}</span>
-            </label>
-          ))}
         </div>
       </div>
 
-      {/* Reset Button */}
-      <button onClick={onReset} className="reset-btn">
-        {t('reset_filters')}
-      </button>
+      <div className="filter-actions">
+        <button type="button" className="reset-btn" onClick={onReset}>
+          {t('reset_filters')}
+        </button>
+      </div>
     </div>
   );
 };
