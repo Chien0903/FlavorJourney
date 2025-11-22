@@ -34,6 +34,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: "vi",
   debug: false,
   defaultNS: "homepage",
+
   ns: [
     "homepage",
     "sidebar",
@@ -44,6 +45,7 @@ i18n.use(initReactI18next).init({
     "profile",
     "change_password",
   ],
+
   resources: {
     vi: {
       homepage: viHomepage,
@@ -66,6 +68,7 @@ i18n.use(initReactI18next).init({
       change_password: jpChangePassword,
     },
   },
+
   interpolation: {
     escapeValue: false,
   },
