@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -13,7 +13,6 @@ import Home from "./pages/Home/Home";
 import DishApproval from "./pages/DishApproval";
 import DishDetail from "./pages/DishDetail";
 import "./App.css";
-import { useTranslation } from "react-i18next";
 import Sidebar from "./components/sidebar/sidebar";
 
 // ============= SHARED COMPONENTS =============
@@ -190,7 +189,7 @@ function AdminProtectedRoute({ children }) {
 // Layout cho admin detail pages
 function AdminDetailLayout({ children }) {
   const navigate = useNavigate();
-  const [active, setActive] = useState("dishApproval");
+  const active = "dishApproval";
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
@@ -218,7 +217,7 @@ function AdminDetailLayout({ children }) {
 // Layout cho user detail pages
 function DetailLayout({ children }) {
   const navigate = useNavigate();
-  const [active, setActive] = useState("home");
+  const active = "home";
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");

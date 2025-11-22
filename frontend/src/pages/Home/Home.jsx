@@ -15,9 +15,6 @@ function Home() {
 
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-  const name =
-    user.username || user.email || (lang === "jp" ? "ユーザー" : "Người dùng");
-
   useEffect(() => {
     const fetchDishes = async () => {
       try {
@@ -46,7 +43,7 @@ function Home() {
     };
 
     fetchDishes();
-  }, []);
+  }, [API_BASE, navigate]);
 
   const handleChangeLang = (e) => {
     const value = e.target.value;
