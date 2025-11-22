@@ -12,6 +12,8 @@ import Home from "./pages/Home/Home";
 // Fixed imports
 import DishApproval from "./pages/DishApproval";
 import DishDetail from "./pages/DishDetail";
+import RegisterDish from "./pages/RegisterDish/RegisterDish";
+import Search from "./pages/Search";
 import "./App.css";
 import Sidebar from "./components/sidebar/sidebar";
 import Favorites from "./pages/Favorites/Favorites";
@@ -51,19 +53,9 @@ function UserHome() {
   const renderContent = () => {
     switch (active) {
       case "search":
-        return (
-          <>
-            <h1>検索</h1>
-            <p>こちらで料理や場所を検索できます。（デモ）</p>
-          </>
-        );
+        return <Search />;
       case "register":
-        return (
-          <>
-            <h1>登録</h1>
-            <p>新しい投稿やレストランを登録します。（デモ）</p>
-          </>
-        );
+        return <RegisterDish />;
       case "favorites":
         return <Favorites />;
       case "profile":
@@ -107,12 +99,7 @@ function AdminHome() {
       case "dishApproval":
         return <DishApproval />;
       case "search":
-        return (
-          <>
-            <h1>検索</h1>
-            <p>こちらで料理や場所を検索できます。（デモ）</p>
-          </>
-        );
+        return <Search />;
       case "register":
         return (
           <>
@@ -120,6 +107,8 @@ function AdminHome() {
             <p>新しい投稿やレストランを登録します。（デモ）</p>
           </>
         );
+      case "register":
+        return <RegisterDish />;
       case "favorites":
         return (
           <>

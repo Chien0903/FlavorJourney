@@ -4,10 +4,14 @@ import viHomepage from "./locales/vi/homepage.json";
 import jpHomepage from "./locales/jp/homepage.json";
 import viSidebar from "./locales/vi/sidebar.json";
 import jpSidebar from "./locales/jp/sidebar.json";
+import viDishForm from "./locales/vi/dishForm.json";
+import jpDishForm from "./locales/jp/dishForm.json";
 import viAdmin from "./locales/vi/admin.json";
 import jpAdmin from "./locales/jp/admin.json";
 import viFavorites from "./locales/vi/favorites.json";
 import jpFavorites from "./locales/jp/favorites.json";
+import viSearch from "./locales/vi/search.json";
+import jpSearch from "./locales/jp/search.json";
 
 const stored =
   typeof window !== "undefined" ? localStorage.getItem("lang") : null;
@@ -18,10 +22,10 @@ i18n.use(initReactI18next).init({
   fallbackLng: "vi",
   debug: false,
   defaultNS: "homepage",
-  ns: ["homepage", "sidebar", "admin", "favorites"],
+  ns: ["homepage", "sidebar", "admin", "favorites",  "dishForm", "search"],
   resources: {
-    vi: { homepage: viHomepage, sidebar: viSidebar, admin: viAdmin, favorites: viFavorites },
-    jp: { homepage: jpHomepage, sidebar: jpSidebar, admin: jpAdmin, favorites: jpFavorites },
+    vi: { homepage: viHomepage, sidebar: viSidebar, admin: viAdmin, favorites: viFavorites, dishForm: viDishForm, search: viSearch },
+    jp: { homepage: jpHomepage, sidebar: jpSidebar, admin: jpAdmin, favorites: jpFavorites, dishForm: jpDishForm, search: jpSearch },
   },
   interpolation: {
     escapeValue: false,
