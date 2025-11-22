@@ -16,6 +16,7 @@ import RegisterDish from "./pages/RegisterDish/RegisterDish";
 import Search from "./pages/Search";
 import "./App.css";
 import Sidebar from "./components/sidebar/sidebar";
+import Favorites from "./pages/Favorites/Favorites";
 
 // ============= SHARED COMPONENTS =============
 
@@ -56,12 +57,7 @@ function UserHome() {
       case "register":
         return <RegisterDish />;
       case "favorites":
-        return (
-          <>
-            <h1>お気に入り</h1>
-            <p>あなたのお気に入りを表示します。（デモ）</p>
-          </>
-        );
+        return <Favorites />;
       case "profile":
         return (
           <>

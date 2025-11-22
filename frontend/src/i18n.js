@@ -8,6 +8,8 @@ import viDishForm from "./locales/vi/dishForm.json";
 import jpDishForm from "./locales/jp/dishForm.json";
 import viAdmin from "./locales/vi/admin.json";
 import jpAdmin from "./locales/jp/admin.json";
+import viFavorites from "./locales/vi/favorites.json";
+import jpFavorites from "./locales/jp/favorites.json";
 import viSearch from "./locales/vi/search.json";
 import jpSearch from "./locales/jp/search.json";
 
@@ -20,10 +22,10 @@ i18n.use(initReactI18next).init({
   fallbackLng: "vi",
   debug: false,
   defaultNS: "homepage",
-  ns: ["homepage", "sidebar", "dishForm", "admin", "search"],
+  ns: ["homepage", "sidebar", "admin", "favorites",  "dishForm", "search"],
   resources: {
-    vi: { homepage: viHomepage, sidebar: viSidebar, dishForm: viDishForm, admin: viAdmin, search: viSearch },
-    jp: { homepage: jpHomepage, sidebar: jpSidebar, dishForm: jpDishForm, admin: jpAdmin, search: jpSearch },
+    vi: { homepage: viHomepage, sidebar: viSidebar, admin: viAdmin, favorites: viFavorites, dishForm: viDishForm, search: viSearch },
+    jp: { homepage: jpHomepage, sidebar: jpSidebar, admin: jpAdmin, favorites: jpFavorites, dishForm: jpDishForm, search: jpSearch },
   },
   interpolation: {
     escapeValue: false,
