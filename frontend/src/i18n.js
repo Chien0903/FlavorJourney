@@ -18,7 +18,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: "vi",
   debug: false,
   defaultNS: "homepage",
-  ns: ["homepage", "sidebar"],
+  ns: ["homepage", "sidebar", "admin", "favorites"],
   resources: {
     vi: { homepage: viHomepage, sidebar: viSidebar, admin: viAdmin, favorites: viFavorites },
     jp: { homepage: jpHomepage, sidebar: jpSidebar, admin: jpAdmin, favorites: jpFavorites },
