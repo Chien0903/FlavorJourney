@@ -19,6 +19,10 @@ function DishDetail() {
   const [favLoading, setFavLoading] = useState(false);
 
   const currentLang = i18n.language;
+  
+  // Check if user is admin
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = user.role === "admin";
 
   useEffect(() => {
     const fetchDishDetail = async () => {
@@ -269,12 +273,14 @@ function DishDetail() {
       </div>
 
       <div className="dish-detail-container">
-        <div className="dish-status-section">
-          <span className="info-label">{t("dishApproval.status")}:</span>
-          <span className={`status-badge ${dish.status || "pending"}`}>
-            {t(`dishApproval.${dish.status || "pending"}`)}
-          </span>
-        </div>
+        {isAdmin && (
+          <div className="dish-status-section">
+            <span className="info-label">{t("dishApproval.status")}:</span>
+            <span className={`status-badge ${dish.status || "pending"}`}>
+              {t(`dishApproval.${dish.status || "pending"}`)}
+            </span>
+          </div>
+        )}
 
         <div className="dish-content">
           <div className="dish-image-section">
