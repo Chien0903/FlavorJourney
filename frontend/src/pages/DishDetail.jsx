@@ -81,6 +81,30 @@ function DishDetail() {
     fetchDishDetail();
   }, [dishId, navigate, t]);
 
+  useEffect(() => {
+    const saveViewHistory = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token || !dish?.id) {
+          return;
+        }
+
+        await fetch(`${API_URL}/view-history`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ dish_id: Number(dish.id) }),
+        });
+      } catch (err) {
+        console.error("Failed to save view history", err);
+      }
+    };
+
+    saveViewHistory();
+  }, [dish]);
+
   const handleApprove = async () => {
     if (!window.confirm(t("dishApproval.confirmApprove"))) {
       return;
