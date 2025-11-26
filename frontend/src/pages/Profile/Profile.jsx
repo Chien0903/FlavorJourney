@@ -20,6 +20,12 @@ function Profile() {
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState(null);
   const [history, setHistory] = useState([]);
+  const [submissionsStats, setSubmissionsStats] = useState({
+    total: 0,
+    approved: 0,
+    pending: 0,
+    rejected: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -57,7 +63,7 @@ function Profile() {
         setProfile(profileData);
 
         // 2. Fetch Statistics (Total Views, Total Searches)
-        // Note: getProfile gives us favorites count and consecutive login, 
+        // Note: getProfile gives us favorites count and consecutive login,
         // but we still need total_views and total_searches from statistics API.
         const statsRes = await fetch(`${API_URL}/users/statistics`, {
           headers: {
@@ -71,16 +77,50 @@ function Profile() {
         setStats(statsData);
 
         // 3. Fetch Recent History
-        const historyRes = await fetch(`${API_URL}/view-history/${userId}/recent?limit=4`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const historyRes = await fetch(
+          `${API_URL}/view-history/${userId}/recent?limit=4`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!historyRes.ok) throw new Error("Failed to fetch history");
         const historyData = await historyRes.json();
         setHistory(historyData.items || []);
 
+        // 4. Fetch My Submissions để tính toán thống kê (không hiển thị chi tiết)
+        const submissionsRes = await fetch(`${API_URL}/dishes/my-submissions`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (submissionsRes.ok) {
+          const submissionsData = await submissionsRes.json();
+          const submissionsList = Array.isArray(submissionsData)
+            ? submissionsData
+            : [];
+
+          // Đảm bảo chỉ hiển thị món ăn của user hiện tại (double-check)
+          const filteredSubmissions = submissionsList.filter(
+            (dish) => dish.submitted_by === userId
+          );
+
+          // Tính toán thống kê
+          const stats = {
+            total: filteredSubmissions.length,
+            approved: filteredSubmissions.filter((d) => d.status === "approved")
+              .length,
+            pending: filteredSubmissions.filter((d) => d.status === "pending")
+              .length,
+            rejected: filteredSubmissions.filter((d) => d.status === "rejected")
+              .length,
+          };
+
+          setSubmissionsStats(stats);
+        }
       } catch (err) {
         console.error("Error fetching profile data:", err);
         setError(err.message);
@@ -96,9 +136,9 @@ function Profile() {
     if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString(currentLang === "jp" ? "ja-JP" : "vi-VN", {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -121,7 +161,9 @@ function Profile() {
     setEditForm({
       location: profile?.location || "",
       email: profile?.email || "",
-      birthday: profile?.birthday ? new Date(profile.birthday).toISOString().split('T')[0] : "",
+      birthday: profile?.birthday
+        ? new Date(profile.birthday).toISOString().split("T")[0]
+        : "",
     });
     setIsEditing(true);
   };
@@ -188,30 +230,47 @@ function Profile() {
           <div className="profile-details">
             <h2>{profile?.username}</h2>
             <div className="profile-item">
-              <span className="icon"><CiMail /></span>
+              <span className="icon">
+                <CiMail />
+              </span>
               <p>{profile?.email}</p>
             </div>
             <div className="profile-item">
-              <span className="icon"><LiaBirthdayCakeSolid /></span>
+              <span className="icon">
+                <LiaBirthdayCakeSolid />
+              </span>
               <p>{profile?.birthday ? formatDate(profile.birthday) : "-"}</p>
             </div>
             <div className="profile-item">
-              <span className="icon"><IoLocationOutline /></span>
+              <span className="icon">
+                <IoLocationOutline />
+              </span>
               <p>{profile?.location ? profile.location : "-"}</p>
             </div>
             <div className="profile-meta">
-              <span className="icon"><CiCalendarDate /></span>
-              <span>{t("joinedDate")}: {formatDate(profile?.registration_date)}</span>
+              <span className="icon">
+                <CiCalendarDate />
+              </span>
+              <span>
+                {t("joinedDate")}: {formatDate(profile?.registration_date)}
+              </span>
             </div>
           </div>
         </div>
         <div className="profile-actions">
           <button className="btn-edit" onClick={handleEditClick}>
-            <span><GoPencil /></span>
+            <span>
+              <GoPencil />
+            </span>
             {t("edit")}
           </button>
-          <button className="btn-change-password" onClick={() => navigate("/change-password")}>
-            <span><RiLockPasswordLine /></span>
+          <button
+            className="btn-change-password"
+            onClick={() => navigate("/change-password")}
+          >
+            <span>
+              <RiLockPasswordLine />
+            </span>
             {t("changePassword")}
           </button>
         </div>
@@ -219,32 +278,121 @@ function Profile() {
 
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon" style={{ color: "#3b82f6" }}><CiSearch /></div>
+          <div className="stat-icon" style={{ color: "#3b82f6" }}>
+            <CiSearch />
+          </div>
           <div className="stat-label">{t("totalReviews")}</div>
           {/* total_searches comes from stats API */}
           <div className="stat-value">{stats?.total_searches || 0}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ color: "#10b981" }}><FaRegEye /></div>
+          <div className="stat-icon" style={{ color: "#10b981" }}>
+            <FaRegEye />
+          </div>
           <div className="stat-label">{t("viewedDishes")}</div>
           {/* total_views comes from stats API */}
           <div className="stat-value">{stats?.total_views || 0}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ color: "#ef4444" }}><CiHeart /></div>
+          <div className="stat-icon" style={{ color: "#ef4444" }}>
+            <CiHeart />
+          </div>
           <div className="stat-label">{t("favorites")}</div>
           {/* Use data from getProfile if available, fallback to stats */}
           <div className="stat-value">
-            {profile?.favoritedDishes?.numberOfDishes ?? stats?.total_favorites ?? 0}
+            {profile?.favoritedDishes?.numberOfDishes ??
+              stats?.total_favorites ??
+              0}
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ color: "#8b5cf6" }}><FaChartLine /></div>
+          <div className="stat-icon" style={{ color: "#8b5cf6" }}>
+            <FaChartLine />
+          </div>
           <div className="stat-label">{t("consecutiveLogin")}</div>
           {/* Use data from getProfile if available, fallback to stats */}
           <div className="stat-value">
-            {profile?.consecutive_login_days ?? stats?.consecutive_login_days ?? 0}{t("days")}
+            {profile?.consecutive_login_days ??
+              stats?.consecutive_login_days ??
+              0}
+            {t("days")}
           </div>
+        </div>
+      </div>
+
+      <div className="my-submissions-section">
+        <div className="submissions-header">
+          <h3>{t("mySubmissions")}</h3>
+          <button
+            className="btn-view-all"
+            onClick={() => navigate("/my-submissions")}
+          >
+            {t("viewAll")}
+          </button>
+        </div>
+
+        <div className="submissions-overview">
+          <div className="overview-stats-grid">
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#3b82f6" }}>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                  <path
+                    d="M3 10h18M3 14h18M5 6h14M5 18h14"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">
+                  {t("totalSubmissions")}
+                </div>
+                <div className="overview-stat-value">
+                  {submissionsStats.total}
+                </div>
+              </div>
+            </div>
+
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#10b981" }}>
+                <span className="status-indicator status-approved"></span>
+              </div>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">{t("approved")}</div>
+                <div className="overview-stat-value">
+                  {submissionsStats.approved}
+                </div>
+              </div>
+            </div>
+
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#f59e0b" }}>
+                <span className="status-indicator status-pending"></span>
+              </div>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">{t("pending")}</div>
+                <div className="overview-stat-value">
+                  {submissionsStats.pending}
+                </div>
+              </div>
+            </div>
+
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#ef4444" }}>
+                <span className="status-indicator status-rejected"></span>
+              </div>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">{t("rejected")}</div>
+                <div className="overview-stat-value">
+                  {submissionsStats.rejected}
+                </div>
+              </div>
+            </div>
+          </div>
+          {submissionsStats.total === 0 && (
+            <p className="text-gray-500 overview-empty">{t("noSubmissions")}</p>
+          )}
         </div>
       </div>
 
@@ -261,14 +409,19 @@ function Profile() {
                 onClick={() => navigate(`/dishes/${item.dish.id}`)}
               >
                 <img
-                  src={item.dish.image_url || "https://placehold.co/100x100?text=No+Image"}
+                  src={
+                    item.dish.image_url ||
+                    "https://placehold.co/100x100?text=No+Image"
+                  }
                   alt={getDishName(item.dish)}
                   className="history-image"
                 />
                 <div className="history-info">
                   <div className="history-name">{getDishName(item.dish)}</div>
                   <div className="history-name-sub">
-                    {currentLang === "jp" ? item.dish.name_vietnamese : item.dish.name_japanese}
+                    {currentLang === "jp"
+                      ? item.dish.name_vietnamese
+                      : item.dish.name_japanese}
                   </div>
                   <div className="history-tag">
                     {getCategoryName(item.dish.category)}
@@ -312,7 +465,10 @@ function Profile() {
               />
             </div>
             <div className="modal-actions">
-              <button className="btn-cancel" onClick={() => setIsEditing(false)}>
+              <button
+                className="btn-cancel"
+                onClick={() => setIsEditing(false)}
+              >
                 {t("cancel")}
               </button>
               <button className="btn-save" onClick={handleSave}>

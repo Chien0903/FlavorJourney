@@ -19,6 +19,7 @@ import "./App.css";
 import Sidebar from "./components/sidebar/sidebar";
 import Favorites from "./pages/Favorites/Favorites";
 import Profile from "./pages/Profile/Profile";
+import MySubmissions from "./pages/MySubmissions/MySubmissions";
 
 // ============= SHARED COMPONENTS =============
 
@@ -39,6 +40,7 @@ function AppLayout({ children, active }) {
       register: "/register-dish",
       favorites: "/favorites",
       profile: "/profile",
+      mySubmissions: "/my-submissions",
       dishApproval: "/dish-approval",
     };
 
@@ -49,7 +51,11 @@ function AppLayout({ children, active }) {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar active={active} onNavigate={handleNavigate} onLogout={handleLogout} />
+      <Sidebar
+        active={active}
+        onNavigate={handleNavigate}
+        onLogout={handleLogout}
+      />
       <main
         style={{
           flex: 1,
@@ -149,6 +155,16 @@ function App() {
             <ProtectedRoute>
               <AppLayout active="profile">
                 <Profile />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-submissions"
+          element={
+            <ProtectedRoute>
+              <AppLayout active="mySubmissions">
+                <MySubmissions />
               </AppLayout>
             </ProtectedRoute>
           }
