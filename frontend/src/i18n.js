@@ -25,6 +25,9 @@ import jpProfile from "./locales/jp/profile.json";
 import viChangePassword from "./locales/vi/change_password.json";
 import jpChangePassword from "./locales/jp/change_password.json";
 
+import viMySubmissions from "./locales/vi/mySubmissions.json";
+import jpMySubmissions from "./locales/jp/mySubmissions.json";
+
 const stored =
   typeof window !== "undefined" ? localStorage.getItem("lang") : null;
 const initialLng = stored || "vi";
@@ -44,6 +47,7 @@ i18n.use(initReactI18next).init({
     "search",
     "profile",
     "change_password",
+    "mySubmissions",
   ],
 
   resources: {
@@ -56,6 +60,7 @@ i18n.use(initReactI18next).init({
       search: viSearch,
       profile: viProfile,
       change_password: viChangePassword,
+      mySubmissions: viMySubmissions,
     },
     jp: {
       homepage: jpHomepage,
@@ -66,6 +71,7 @@ i18n.use(initReactI18next).init({
       search: jpSearch,
       profile: jpProfile,
       change_password: jpChangePassword,
+      mySubmissions: jpMySubmissions,
     },
   },
 

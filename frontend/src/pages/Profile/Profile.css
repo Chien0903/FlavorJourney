@@ -251,7 +251,7 @@
   margin: 0;
 }
 
-.btn-toggle-submissions {
+.btn-view-all {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -266,18 +266,8 @@
   transition: all 0.2s;
 }
 
-.btn-toggle-submissions:hover:not(:disabled) {
+.btn-view-all:hover {
   background-color: #ea580c;
-}
-
-.btn-toggle-submissions:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.toggle-icon {
-  font-size: 0.75rem;
-  transition: transform 0.2s;
 }
 
 .submissions-grid {

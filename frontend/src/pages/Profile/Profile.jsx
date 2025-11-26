@@ -11,7 +11,6 @@ import { FaChartLine } from "react-icons/fa6";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import { IoLocationOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { MdRestaurantMenu } from "react-icons/md";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -21,14 +20,12 @@ function Profile() {
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState(null);
   const [history, setHistory] = useState([]);
-  const [mySubmissions, setMySubmissions] = useState([]);
   const [submissionsStats, setSubmissionsStats] = useState({
     total: 0,
     approved: 0,
     pending: 0,
     rejected: 0,
   });
-  const [showSubmissions, setShowSubmissions] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -123,7 +120,6 @@ function Profile() {
           };
 
           setSubmissionsStats(stats);
-          setMySubmissions(filteredSubmissions);
         }
       } catch (err) {
         console.error("Error fetching profile data:", err);
@@ -159,40 +155,6 @@ function Profile() {
       return category.name_japanese || category.name_vietnamese;
     }
     return category.name_vietnamese || category.name_japanese;
-  };
-
-  const getRegionName = (region) => {
-    if (!region) return "";
-    if (currentLang === "jp") {
-      return region.name_japanese || region.name_vietnamese;
-    }
-    return region.name_vietnamese || region.name_japanese;
-  };
-
-  const getStatusLabel = (status) => {
-    if (currentLang === "jp") {
-      const statusMap = {
-        pending: "審査中",
-        approved: "承認済み",
-        rejected: "却下",
-      };
-      return statusMap[status] || status;
-    }
-    const statusMap = {
-      pending: "Chờ duyệt",
-      approved: "Đã duyệt",
-      rejected: "Đã từ chối",
-    };
-    return statusMap[status] || status;
-  };
-
-  const getStatusClass = (status) => {
-    return `status-badge status-${status || "pending"}`;
-  };
-
-  const handleToggleSubmissions = () => {
-    // Chỉ toggle hiển thị/ẩn, data đã được load sẵn
-    setShowSubmissions(!showSubmissions);
   };
 
   const handleEditClick = () => {
@@ -362,161 +324,76 @@ function Profile() {
         <div className="submissions-header">
           <h3>{t("mySubmissions")}</h3>
           <button
-            className="btn-toggle-submissions"
-            onClick={handleToggleSubmissions}
+            className="btn-view-all"
+            onClick={() => navigate("/my-submissions")}
           >
-            {showSubmissions ? (
-              <>
-                <span>{t("hideSubmissions")}</span>
-                <span className="toggle-icon">▲</span>
-              </>
-            ) : (
-              <>
-                <span>{t("showSubmissions")}</span>
-                <span className="toggle-icon">▼</span>
-              </>
-            )}
+            {t("viewAll")}
           </button>
         </div>
 
-        {!showSubmissions ? (
-          <div className="submissions-overview">
-            <div className="overview-stats-grid">
-              <div className="overview-stat-card">
-                <div
-                  className="overview-stat-icon"
-                  style={{ color: "#3b82f6" }}
-                >
-                  <MdRestaurantMenu size={24} />
-                </div>
-                <div className="overview-stat-content">
-                  <div className="overview-stat-label">
-                    {t("totalSubmissions")}
-                  </div>
-                  <div className="overview-stat-value">
-                    {submissionsStats.total}
-                  </div>
-                </div>
+        <div className="submissions-overview">
+          <div className="overview-stats-grid">
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#3b82f6" }}>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                  <path
+                    d="M3 10h18M3 14h18M5 6h14M5 18h14"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </div>
-
-              <div className="overview-stat-card">
-                <div
-                  className="overview-stat-icon"
-                  style={{ color: "#10b981" }}
-                >
-                  <span className="status-indicator status-approved"></span>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">
+                  {t("totalSubmissions")}
                 </div>
-                <div className="overview-stat-content">
-                  <div className="overview-stat-label">{t("approved")}</div>
-                  <div className="overview-stat-value">
-                    {submissionsStats.approved}
-                  </div>
-                </div>
-              </div>
-
-              <div className="overview-stat-card">
-                <div
-                  className="overview-stat-icon"
-                  style={{ color: "#f59e0b" }}
-                >
-                  <span className="status-indicator status-pending"></span>
-                </div>
-                <div className="overview-stat-content">
-                  <div className="overview-stat-label">{t("pending")}</div>
-                  <div className="overview-stat-value">
-                    {submissionsStats.pending}
-                  </div>
-                </div>
-              </div>
-
-              <div className="overview-stat-card">
-                <div
-                  className="overview-stat-icon"
-                  style={{ color: "#ef4444" }}
-                >
-                  <span className="status-indicator status-rejected"></span>
-                </div>
-                <div className="overview-stat-content">
-                  <div className="overview-stat-label">{t("rejected")}</div>
-                  <div className="overview-stat-value">
-                    {submissionsStats.rejected}
-                  </div>
+                <div className="overview-stat-value">
+                  {submissionsStats.total}
                 </div>
               </div>
             </div>
-            {submissionsStats.total === 0 && (
-              <p className="text-gray-500 overview-empty">
-                {t("noSubmissions")}
-              </p>
-            )}
-          </div>
-        ) : (
-          <>
-            {mySubmissions.length === 0 ? (
-              <p className="text-gray-500">{t("noSubmissions")}</p>
-            ) : (
-              <div className="submissions-grid">
-                {mySubmissions.map((dish) => (
-                  <div
-                    key={dish.id}
-                    className="submission-card"
-                    onClick={() => navigate(`/dishes/${dish.id}`)}
-                  >
-                    <div className="submission-image-container">
-                      {dish.image_url ? (
-                        <img
-                          src={dish.image_url}
-                          alt={getDishName(dish)}
-                          className="submission-image"
-                        />
-                      ) : (
-                        <div className="submission-image-placeholder">
-                          <MdRestaurantMenu size={32} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="submission-info">
-                      <div className="submission-header">
-                        <div className="submission-name">
-                          {getDishName(dish)}
-                        </div>
-                        <span className={getStatusClass(dish.status)}>
-                          {getStatusLabel(dish.status)}
-                        </span>
-                      </div>
-                      <div className="submission-name-sub">
-                        {currentLang === "jp"
-                          ? dish.name_vietnamese
-                          : dish.name_japanese}
-                      </div>
-                      <div className="submission-meta">
-                        {dish.category && (
-                          <span className="submission-tag">
-                            {getCategoryName(dish.category)}
-                          </span>
-                        )}
-                        {dish.region && (
-                          <span className="submission-tag">
-                            {getRegionName(dish.region)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="submission-date">
-                        {t("submittedAt")}: {formatDate(dish.submitted_at)}
-                      </div>
-                      {dish.status === "rejected" && dish.rejection_reason && (
-                        <div className="rejection-reason">
-                          <strong>{t("rejectionReason")}:</strong>{" "}
-                          {dish.rejection_reason}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
+
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#10b981" }}>
+                <span className="status-indicator status-approved"></span>
               </div>
-            )}
-          </>
-        )}
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">{t("approved")}</div>
+                <div className="overview-stat-value">
+                  {submissionsStats.approved}
+                </div>
+              </div>
+            </div>
+
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#f59e0b" }}>
+                <span className="status-indicator status-pending"></span>
+              </div>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">{t("pending")}</div>
+                <div className="overview-stat-value">
+                  {submissionsStats.pending}
+                </div>
+              </div>
+            </div>
+
+            <div className="overview-stat-card">
+              <div className="overview-stat-icon" style={{ color: "#ef4444" }}>
+                <span className="status-indicator status-rejected"></span>
+              </div>
+              <div className="overview-stat-content">
+                <div className="overview-stat-label">{t("rejected")}</div>
+                <div className="overview-stat-value">
+                  {submissionsStats.rejected}
+                </div>
+              </div>
+            </div>
+          </div>
+          {submissionsStats.total === 0 && (
+            <p className="text-gray-500 overview-empty">{t("noSubmissions")}</p>
+          )}
+        </div>
       </div>
 
       <div className="recent-history-section">
