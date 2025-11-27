@@ -98,7 +98,7 @@ function DishDetail() {
     };
 
     fetchDishDetail();
-  }, [dishId, navigate, t, currentLang]);
+  }, [dishId, navigate, t]);
 
   const handleApprove = async () => {
     if (!window.confirm(t("dishApproval.confirmApprove"))) {
@@ -238,6 +238,17 @@ function DishDetail() {
     return region.name_vietnamese || region.name_japanese;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleString(currentLang === "jp" ? "ja-JP" : "vi-VN");
+  };
+
+  const getTasteLevelWidth = (level) => {
+    if (!level) return "0%";
+    return `${(level / 5) * 100}%`;
+  };
+
   const getSpiceLevelText = (level) => {
     if (!level || level === 0)
       return currentLang === "jp" ? "辛くない" : "Không cay";
@@ -308,6 +319,11 @@ function DishDetail() {
         )}
       </div>
 
+      <div
+        className={`dish-detail-layout ${
+          dish.status !== "pending" ? "single-column" : ""
+        }`}
+      >
       <div className="dish-detail-layout">
         {/* LEFT COLUMN - Dish Info */}
         <div className="dish-detail-main">
@@ -465,6 +481,12 @@ function DishDetail() {
           </div>
         </div>
 
+        {/* RIGHT COLUMN - AI Generator - Only show for pending dishes */}
+        {dish.status === "pending" && (
+          <div className="ai-panel-wrapper">
+            <AIIntroGenerator dish={dish} />
+          </div>
+        )}
         {/* RIGHT COLUMN - AI Generator */}
         <div className="ai-panel-wrapper">
           <AIIntroGenerator dish={dish} />

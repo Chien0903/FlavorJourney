@@ -287,8 +287,8 @@
   gap: 8px;
   width: 100%;
   padding: 14px 24px;
-  background-color: #ffe0cf;
-  color: #e07a3f;
+  background-color: #ff7a3d;
+  color: white;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -298,10 +298,9 @@
 }
 
 .btn-favorite:hover:not(:disabled) {
-  background-color: #ffeade;
-  color: #e07a3f;
+  background-color: #ff6a2e;
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(224, 122, 63, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 122, 61, 0.3);
 }
 
 .btn-favorite:disabled {
@@ -310,13 +309,11 @@
 }
 
 .btn-favorite.active {
-  background-color: #ffe0cf;
-  color: #e07a3f;
+  background-color: #ef4444;
 }
 
 .btn-favorite.active:hover:not(:disabled) {
-  background-color: #ffeade;
-  color: #e07a3f;
+  background-color: #dc2626;
 }
 
 .favorite-icon {
