@@ -292,6 +292,7 @@ function DishDetail() {
       </div>
 
       <div className="dish-detail-layout">
+        {/* LEFT COLUMN - Dish Info */}
         <div className="dish-detail-main">
           <div className="dish-detail-container">
             {isAdmin && (
@@ -495,6 +496,7 @@ function DishDetail() {
           </div>
         </div>
 
+        {/* RIGHT COLUMN - AI Generator */}
         <div className="ai-panel-wrapper">
           <AIIntroGenerator dish={dish} />
         </div>
