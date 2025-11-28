@@ -324,7 +324,6 @@ function DishDetail() {
           dish.status !== "pending" ? "single-column" : ""
         }`}
       >
-      <div className="dish-detail-layout">
         {/* LEFT COLUMN - Dish Info */}
         <div className="dish-detail-main">
           <div className="dish-info-wrapper">
@@ -487,10 +486,6 @@ function DishDetail() {
             <AIIntroGenerator dish={dish} />
           </div>
         )}
-        {/* RIGHT COLUMN - AI Generator */}
-        <div className="ai-panel-wrapper">
-          <AIIntroGenerator dish={dish} />
-        </div>
       </div>
 
       {showRejectModal && (
