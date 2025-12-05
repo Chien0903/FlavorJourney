@@ -1,0 +1,33 @@
+{
+  "back_to_search": "← 検索に戻る",
+  "dish_image_alt": "料理の写真",
+  "region_label": "地域",
+  "spiciness_label": "辛さレベル",
+  "spiciness_levels": {
+    "0": "辛くない",
+    "1": "少し辛い",
+    "2": "中辛",
+    "3": "辛い",
+    "4": "とても辛い",
+    "5": "激辛"
+  },
+  "ingredients_label": "主な材料",
+  "description_label": "説明",
+  "how_to_eat_label": "食べ方",
+  "add_to_favorites": "お気に入りに追加",
+  "remove_from_favorites": "お気に入りから削除",
+  "ai_generator_title": "AI紹介文ジェネレーター",
+  "ai_generator_subtitle": "場面や相手を入力して、紹介文を生成",
+  "ai_prompt_label": "紹介する場面や相手を教えてください",
+  "ai_prompt_placeholder": "例：友達との食事で紹介する場合...",
+  "generate_button": "AIで紹介文を生成",
+  "generating": "生成中...",
+  "recommended_intros": "おすすめの紹介文",
+  "copy_button": "コピー",
+  "copied": "コピーしました！",
+  "save_template": "テンプレートを保存",
+  "loading": "読み込み中...",
+  "error": "エラーが発生しました",
+  "not_found": "料理が見つかりません"
+}
+

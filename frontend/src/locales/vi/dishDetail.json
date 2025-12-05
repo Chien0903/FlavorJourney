@@ -1,0 +1,33 @@
+{
+  "back_to_search": "← Quay lại tìm kiếm",
+  "dish_image_alt": "Hình ảnh món ăn",
+  "region_label": "Vùng miền",
+  "spiciness_label": "Độ cay",
+  "spiciness_levels": {
+    "0": "Không cay",
+    "1": "Hơi cay",
+    "2": "Cay vừa",
+    "3": "Cay",
+    "4": "Rất cay",
+    "5": "Cực cay"
+  },
+  "ingredients_label": "Nguyên liệu chính",
+  "description_label": "Mô tả",
+  "how_to_eat_label": "Cách ăn",
+  "add_to_favorites": "Thêm vào yêu thích",
+  "remove_from_favorites": "Bỏ khỏi yêu thích",
+  "ai_generator_title": "AI Tạo Giới Thiệu",
+  "ai_generator_subtitle": "Nhập ngữ cảnh và đối tượng để tạo câu giới thiệu",
+  "ai_prompt_label": "Ngữ cảnh và đối tượng giới thiệu",
+  "ai_prompt_placeholder": "Ví dụ: Giới thiệu món này cho bạn bè trong bữa ăn thân mật...",
+  "generate_button": "Tạo giới thiệu bằng AI",
+  "generating": "Đang tạo...",
+  "recommended_intros": "Giới thiệu đề xuất",
+  "copy_button": "Sao chép",
+  "copied": "Đã sao chép!",
+  "save_template": "Lưu template",
+  "loading": "Đang tải...",
+  "error": "Đã xảy ra lỗi",
+  "not_found": "Không tìm thấy món ăn"
+}
+
