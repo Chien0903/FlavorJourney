@@ -260,7 +260,7 @@ export default function Login({ onLoginSuccess }) {
       </div>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={1200}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

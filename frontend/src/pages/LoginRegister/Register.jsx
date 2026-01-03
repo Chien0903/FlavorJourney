@@ -113,7 +113,7 @@ export default function Register({ onSwitchToLogin }) {
       </div>
       <ToastContainer
         position="top-right"
-        autoClose={3000}
+        autoClose={1200}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
